@@ -94,11 +94,11 @@ def last_30_days_chat(chats_dataFrame):
     today = pd.to_datetime(time.ctime(time.time())).date()
     print(f"Today date is : {today}")
     today_index = temp_df[temp_df['Date'] == today].index
-    today_index = today_index[0]
+    today_index = today_index[len(today_index)-1]
     print(f"Index in today_index is : {today_index}")
     print(f"Date of month back is {date_of_month_back}")
     date_of_month_back_index = temp_df[temp_df['Date']==date_of_month_back].index
-    date_of_month_back_index = date_of_month_back_index[len(date_of_month_back_index)-1]
+    date_of_month_back_index = date_of_month_back_index[0]
     print(f"Index in date_of_month_back_index is : {date_of_month_back_index}")
     prev_30_days_chat = temp_df.iloc[date_of_month_back_index:today_index]
     print(prev_30_days_chat)
@@ -124,7 +124,7 @@ def creating_dataFrame(file_name):
         'custom': ''
     }
 
-    file = open(r"C:\Users\Khan Mob s  Comp\PycharmProjects\Whatsapp_Chat_Data_Analysis\bds_chat_data.txt", 'r',
+    file = open(r"C:\Users\Khan Mob s  Comp\PycharmProjects\Whatsapp_Chat_data_analysis_iphone\bds_media_chat_data.txt", 'r',
                 encoding='utf-8')
 
     raw_string = " ".join(file.read().split('\n'))  # splitting our text by \n.
@@ -134,23 +134,12 @@ def creating_dataFrame(file_name):
 
     # extracting out the date and time from given raw string.
     date_and_time = re.findall(split_formats['12hr'], raw_string)
-    # print(date_and_time)
     chats_dataFrame = pd.DataFrame({'date_time': date_and_time, 'user_messages': user_messages})
-    # print(chats_dataFrame)
 
     # Converting date_time to pandas date_time object.
-
-    ls = []
-    for i in chats_dataFrame['date_time']:
-        ls.append(i[1:-1])
-    sr = pd.Series(ls)
-    chats_dataFrame['date_time'] = sr
     chats_dataFrame['date_time'] = pd.to_datetime(chats_dataFrame['date_time'], format=datetime_formats['12hr'])
 
-    # print(chats_dataFrame)
-
     chats_dataFrame = splitting_user_and_message(chats_dataFrame)
-    # print(chats_dataFrame)
     splitting_date_and_time(chats_dataFrame)
     return adding_helper_columns(chats_dataFrame)
 
@@ -161,7 +150,6 @@ if __name__ == '__main__':
     chats_dataFrame = creating_dataFrame(file_name)
     chats_dataFrame = most_active_users(chats_dataFrame)
     last_30_days_chat(chats_dataFrame)
-    # print(chats_dataFrame)
 
 
     pass
